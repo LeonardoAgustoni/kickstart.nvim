@@ -91,7 +91,15 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
+
+function OpenTerminal()
+  vim.cmd 'split | terminal zsh'
+  vim.cmd 'resize 12'
+  vim.cmd 'startinsert'
+end
+
+vim.keymap.set('n', 'tt', OpenTerminal, { desc = 'Opens terminal on new window at the bottom' })
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -283,7 +291,39 @@ require('lazy').setup({
       },
     },
   },
-
+  {
+    'MagicDuck/grug-far.nvim',
+    -- Note (lazy loading): grug-far.lua defers all it's requires so it's lazy by default
+    -- additional lazy config to defer loading is not really needed...
+    config = function()
+      -- optional setup call to override plugin options
+      -- alternatively you can set options with vim.g.grug_far = { ... }
+      require('grug-far').setup {
+        -- options, see Configuration section below
+        -- there are no required options atm
+      }
+    end,
+  },
+  {
+    'kdheepak/lazygit.nvim',
+    lazy = true,
+    cmd = {
+      'LazyGit',
+      'LazyGitConfig',
+      'LazyGitCurrentFile',
+      'LazyGitFilter',
+      'LazyGitFilterCurrentFile',
+    },
+    -- optional for floating window border decoration
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+    -- setting the keybinding for LazyGit with 'keys' is recommended in
+    -- order to load the plugin when the command is run for the first time
+    keys = {
+      { '<leader>lg', '<cmd>LazyGit<cr>', desc = 'LazyGit' },
+    },
+  },
   {
     'folke/flash.nvim',
     event = 'VeryLazy',
@@ -900,7 +940,13 @@ require('lazy').setup({
       signature = { enabled = true },
     },
   },
-
+  { 'rebelot/kanagawa.nvim', name = 'kanagawa', priority = 1000, lazy = false },
+  -- Lazy
+  {
+    'olimorris/onedarkpro.nvim',
+    priority = 1000, -- Ensure it loads first
+  },
+  { 'catppuccin/nvim', name = 'catppuccin', priority = 1000 },
   { -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
     -- change the command in the config to whatever the name of that colorscheme is.
@@ -919,7 +965,7 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'catppuccin'
     end,
   },
 
@@ -998,12 +1044,13 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.neo-tree',
+
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
